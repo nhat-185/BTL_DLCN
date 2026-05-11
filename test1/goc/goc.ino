@@ -5,6 +5,7 @@
 const int trig = 10;
 const int echo = 11;
 
+// Kiểm tra hiển thị LCD
 String lcdMessage = "";
 unsigned long messageStartTime = 0;
 bool showMessage = false;
@@ -17,6 +18,7 @@ float calib = 0.0;
 float calib1 = 0.0, calib2 = 0.0;
 float dist1 = 0.0, dist2 = 0.0;
 
+// Kiểm tra đã hiệu chuẩn chưa
 bool hasCalib1 = false;
 bool hasCalib2 = false;
 
@@ -43,19 +45,22 @@ void loop() {
   if (Serial.available() > 0) {
     String input = Serial.readStringUntil('\n');
     input.trim();
-
+    
+    
+    // Hiệu chuẩn điểm 1
     if (input.startsWith("c1=")) {
       calib1 = input.substring(3).toFloat();
-      delay(1000);  // đợi vật ổn định
+      delay(1000);        // đợi vật ổn định
       dist1 = measureMedianDistance(7);
       hasCalib1 = true;
       Serial.println("SET_C1_DONE");
       showLCDMessage("Saved C1");
     }
 
+    // Hiệu chuẩn điểm 2
     if (input.startsWith("c2=")) {
       calib2 = input.substring(3).toFloat();
-      delay(1000);  // đợi vật ổn định
+      delay(1000);        // đợi vật ổn định
       dist2 = measureMedianDistance(7);
       hasCalib2 = true;
       Serial.println("SET_C2_DONE");
@@ -70,12 +75,12 @@ void loop() {
       showLCDMessage("Calib OK");
     }
 
-    while (Serial.available()) Serial.read(); // xóa buffer
+    while (Serial.available()) 
+    Serial.read(); // xóa buffer
   }
 
   // Đo khoảng cách và hiệu chỉnh
-
-  distance = measureMedianDistance(5);
+  distance = measureMedianDistance(5);  // Đo trung vị 5 lần để giảm nhiễu
 
   if (hasCalib1 && hasCalib2) {
     calib = a * distance + b;
@@ -83,8 +88,9 @@ void loop() {
     calib = distance;
   }
 
-  if (calib < 0) calib = 0;
-
+  if (calib < 0) calib = 0;  // Tránh trường hợp giá trị âm
+  
+  
   // Ghi ra Serial
   Serial.print("D = ");
   Serial.print(distance, 2);
@@ -95,14 +101,15 @@ void loop() {
   Serial.print(" | b = ");
   Serial.println(b, 4);
 
+
   // Hiển thị LCD
   // Nếu đang hiển thị message
-  
 lcd.setCursor(0, 0);
 lcd.print("DISTANCE MEASURE");
-  if (showMessage) {
+if (showMessage) {
   if (millis() - messageStartTime < 2000) {
-  } else {
+  } 
+  else {
     showMessage = false;
     lcd.clear();
   }
@@ -124,6 +131,8 @@ if (!showMessage) {
   delay(100);
 }
 
+
+// Hiển thị trên LCD
 void showLCDMessage(String msg) {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -134,11 +143,13 @@ void showLCDMessage(String msg) {
   showMessage = true;
 }
 
+
+// Đo trung vị nhiều lẫn để giảm nhiễu
 float measureMedianDistance(int n) {
   float values[9];
   int count = 0;
 
-  if (n > 9) n = 9;
+  if (n > 9) n = 9;  // Giới hạn tối đa 9 mẫu
 
   for (int i = 0; i < n; i++) {
     float d = measureSingleDistance();
@@ -149,9 +160,9 @@ float measureMedianDistance(int n) {
     }
 
     delay(60);
-  }
+}
 
-  if (count == 0) return 9999.0;
+if (count == 0) return 9999.0;
 
   for (int i = 0; i < count - 1; i++) {
     for (int j = i + 1; j < count; j++) {
@@ -165,6 +176,7 @@ float measureMedianDistance(int n) {
 
   return values[count / 2];
 }
+
 
 // Hàm đo khoảng cách 1 lần
 float measureSingleDistance() {

@@ -179,6 +179,7 @@
             this.textBoxA.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxA.Multiline = true;
             this.textBoxA.Name = "textBoxA";
+            this.textBoxA.ReadOnly = true;
             this.textBoxA.Size = new System.Drawing.Size(107, 34);
             this.textBoxA.TabIndex = 14;
             // 
@@ -189,6 +190,7 @@
             this.textBoxB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxB.Multiline = true;
             this.textBoxB.Name = "textBoxB";
+            this.textBoxB.ReadOnly = true;
             this.textBoxB.Size = new System.Drawing.Size(107, 31);
             this.textBoxB.TabIndex = 15;
             // 
