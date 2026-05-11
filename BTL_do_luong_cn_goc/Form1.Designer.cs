@@ -263,7 +263,7 @@
             this.trackBarB.LargeChange = 50;
             this.trackBarB.Location = new System.Drawing.Point(125, 113);
             this.trackBarB.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.trackBarB.Maximum = 500;
+            this.trackBarB.Maximum = 800;
             this.trackBarB.Name = "trackBarB";
             this.trackBarB.Size = new System.Drawing.Size(331, 56);
             this.trackBarB.TabIndex = 13;
@@ -273,7 +273,7 @@
             // 
             this.trackBarA.Location = new System.Drawing.Point(125, 46);
             this.trackBarA.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.trackBarA.Maximum = 500;
+            this.trackBarA.Maximum = 800;
             this.trackBarA.Name = "trackBarA";
             this.trackBarA.Size = new System.Drawing.Size(331, 56);
             this.trackBarA.TabIndex = 12;

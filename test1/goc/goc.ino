@@ -47,7 +47,7 @@ void loop() {
     if (input.startsWith("c1=")) {
       calib1 = input.substring(3).toFloat();
       delay(1000);  // đợi vật ổn định
-      dist1 = measureAverageDistance(10);
+      dist1 = measureMedianDistance(7);
       hasCalib1 = true;
       Serial.println("SET_C1_DONE");
       showLCDMessage("Saved C1");
@@ -56,7 +56,7 @@ void loop() {
     if (input.startsWith("c2=")) {
       calib2 = input.substring(3).toFloat();
       delay(1000);  // đợi vật ổn định
-      dist2 = measureAverageDistance(10);
+      dist2 = measureMedianDistance(7);
       hasCalib2 = true;
       Serial.println("SET_C2_DONE");
       showLCDMessage("Saved C2");
@@ -74,7 +74,8 @@ void loop() {
   }
 
   // Đo khoảng cách và hiệu chỉnh
-distance = measureAverageDistance(5);
+
+  distance = measureMedianDistance(5);
 
   if (hasCalib1 && hasCalib2) {
     calib = a * distance + b;
@@ -133,30 +134,42 @@ void showLCDMessage(String msg) {
   showMessage = true;
 }
 
-float measureAverageDistance(int n) {
-  float sum = 0;
+float measureMedianDistance(int n) {
+  float values[9];
   int count = 0;
+
+  if (n > 9) n = 9;
 
   for (int i = 0; i < n; i++) {
     float d = measureSingleDistance();
 
-    if (d < 500) { // loại giá trị lỗi
-      sum += d;
+    if (d > 0 && d < 500) {
+      values[count] = d;
       count++;
     }
 
-    delay(200); // nghỉ giữa các lần đo
+    delay(60);
   }
 
   if (count == 0) return 9999.0;
 
-  return sum / count;
+  for (int i = 0; i < count - 1; i++) {
+    for (int j = i + 1; j < count; j++) {
+      if (values[j] < values[i]) {
+        float temp = values[i];
+        values[i] = values[j];
+        values[j] = temp;
+      }
+    }
+  }
+
+  return values[count / 2];
 }
 
 // Hàm đo khoảng cách 1 lần
 float measureSingleDistance() {
   digitalWrite(trig, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(4);
   digitalWrite(trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
